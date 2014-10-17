@@ -1,0 +1,9 @@
+The program must be written in python (2.7 or higher) with the following characteristics:
+It must read a file containing, for each column: xi , yi and σi (standard deviations of the dependent variable).
+It must be possible to select the degree of the polynomial to be fitted.
+It must be an option to use σi or not in the fit.
+It must solve the coefficients of the fit using a least-squares procedure by using arrays (NOT any built-in python function for fitting).
+The goodness of the fit (R-squared) must be shown.
+It must give the standard deviations for each coefficient and the average standard deviation of the fit.
+Main procedures in the program must be described using comments to  easily  follow the flow of the code.
+To test the program, the files  datafit1.dat, datafit2.dat, and datafit3.dat can be used. The results of the fit to these files can be found in the readme.txt file.

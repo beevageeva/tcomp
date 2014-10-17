@@ -1,0 +1,15 @@
+Git repository
+https://github.com/beevageeva/polynomfit
+
+Clonar el repositorio:
+git clone https://github.com/beevageeva/polynomfit
+
+
+
+Ejemplos de uso:
+si los valores estan en columnas como en datafit*.dat solo hay que especificar el fichero de entrada con la opcion --input=<filename> 
+python prac.py --input=datafit2.dat 
+si los valores estan en lineas como en fit*.dat añadir la opción --rows  . Por defecto los datos están por columna
+python prac.py --input=fit2.dat --rows 
+si queremos usar los valores sigma(e intentar leerlos del fichero como linea o columna segun si he especificado --rows o no) añadir la opción --sigma 
+python prac.py --input=datafit2.dat --sigma
