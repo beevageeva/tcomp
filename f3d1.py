@@ -75,9 +75,9 @@ def fourierFunExpl(t):
 
 def fourierFunFFT(t):
 		#with scipy
-		rfft = 	fft(fun(t)) 
+		#rfft = 	fft(fun(t)) 
 		#normalize ??
-		#rfft = 	fft(fun(t)) / numPoints
+		rfft = 	fft(fun(t)) / numPoints
 		an = rfft.real
 		bn = rfft.imag
 		print("shape an")
@@ -100,9 +100,12 @@ def fourierFunFFT(t):
 		#for n in range(1,numPoints):
 		middle = int(numPoints/2)
 		for n in range(0, numPoints):
-			val = 0
+			val = 0.0
 			for k in range(1, middle):
-				val +=(an[k]  + an[numPoints - k])* np.cos(2 * n * pi * k * dt /numPoints)
+				print("K=%d, N-k = %d , %e, %e; %e %e %e" % (k, numPoints-k, bn[k], bn[numPoints-k],  (bn[k]  + bn[numPoints - k]), np.sin(4 * n * pi * k  / numPoints), (bn[k]  + bn[numPoints - k]) * np.sin(2 * n * pi * k  / numPoints)))
+				#val +=(bn[k]  - bn[numPoints - k])* np.sin(-2 * n * pi * k  / numPoints)
+				#val +=(an[k]  + an[numPoints - k])* np.cos(-2 * n * pi * k / numPoints)
+				val +=(an[k]  + an[numPoints - k])* np.cos(-2 * n * pi * k / numPoints) +  (bn[k]  - bn[numPoints - k])* np.sin(-2 * n * pi * k  / numPoints)
 			res[n] = val
 		print("res = ")
 		print(res) 
