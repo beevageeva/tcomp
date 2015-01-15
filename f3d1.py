@@ -2,7 +2,7 @@ from math import cos,  pi, e, sin
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import integrate
-from scipy.fftpack import fft,fftfreq#forFourierTransform
+from scipy.fftpack import fft,fftfreq, rfft#forFourierTransform
 
 f = 400
 ns = 16
@@ -19,6 +19,9 @@ def fun(t):
 def fun2(t):
 	return np.sin(2 * np.pi * f * t ) - 0.5*np.sin( 2 * np.pi *2* f * t )
 
+
+def fun3(t):
+	return np.sin(2 * np.pi * f * t + 0.25 * pi) 
 
 
 
@@ -73,13 +76,43 @@ def fourierFunExpl(t):
 			res+=an[n] * np.cos(2 * n * pi * t / T) + bn[n] * np.sin(2 * n * pi * t / T)
 		return res
 
+
+def getDiscreteFourierCoef(t):
+	ak = np.zeros(numPoints)
+	bk = np.zeros(numPoints)
+	for k in range(0, numPoints):	
+		for i in range(0, numPoints):
+			ak[k] += fun(t[i])* cos(2.0 * pi * i * k  /numPoints)
+			bk[k] += fun(t[i]) * sin(2.0 * pi * i * k  /numPoints)
+		ak[k] *= (2.0/numPoints)
+		bk[k] *= (-2.0/numPoints)
+		print("-------------k = %d, ak=%e, bk=%e" % (k,ak[k],bk[k]))
+
+	return ak, bk
+
+
+
+
+
 def fourierFunFFT(t):
+
 		#with scipy
 		#rfft = 	fft(fun(t)) 
 		#normalize ??
-		rfft = 	fft(fun(t)) / numPoints
-		an = rfft.real
-		bn = rfft.imag
+		#rFFT = 	rfft(fun(t)) / numPoints  #rfft only the real coeff
+		rFFT = 	fft(fun(t)) / numPoints
+		an = rFFT.real
+		bn = rFFT.imag
+
+		#explicitly
+		an1, bn1 = getDiscreteFourierCoef(t)
+		print("anEx fft")
+		print(an1)
+		print("bnEx fft")
+		print(bn1)
+
+
+
 		print("shape an")
 		print(an.shape)
 		print("shape bn")
@@ -88,7 +121,8 @@ def fourierFunFFT(t):
 		print(an)
 		print("bn fft")
 		print(bn)
-		ff = fftfreq(numPoints)		
+
+		ff = fftfreq(numPoints, dt)		
 		print("frequencies shape")
 		print(ff.shape)
 		print("frequencie")
@@ -102,10 +136,13 @@ def fourierFunFFT(t):
 		for n in range(0, numPoints):
 			val = 0.0
 			for k in range(1, middle):
-				print("K=%d, N-k = %d , %e, %e; %e %e %e" % (k, numPoints-k, bn[k], bn[numPoints-k],  (bn[k]  + bn[numPoints - k]), np.sin(4 * n * pi * k  / numPoints), (bn[k]  + bn[numPoints - k]) * np.sin(2 * n * pi * k  / numPoints)))
+				#print("K=%d, N-k = %d , %e, %e; %e %e %e" % (k, numPoints-k, bn[k], bn[numPoints-k],  (bn[k]  + bn[numPoints - k]), np.sin(4 * n * pi * k  / numPoints), (bn[k]  + bn[numPoints - k]) * np.sin(2 * n * pi * k  / numPoints)))
+				#BOTH necessary:: not only the following 2 because there may be real and imaginary part
 				#val +=(bn[k]  - bn[numPoints - k])* np.sin(-2 * n * pi * k  / numPoints)
 				#val +=(an[k]  + an[numPoints - k])* np.cos(-2 * n * pi * k / numPoints)
-				val +=(an[k]  + an[numPoints - k])* np.cos(-2 * n * pi * k / numPoints) +  (bn[k]  - bn[numPoints - k])* np.sin(-2 * n * pi * k  / numPoints)
+				#redundant coef for negative frequencies?
+				#val +=(an[k]  + an[numPoints - k])* np.cos(-2 * n * pi * k / numPoints) +  (bn[k]  - bn[numPoints - k])* np.sin(-2 * n * pi * k  / numPoints)
+				val +=2*an[k] * np.cos(-2 * n * pi * k / numPoints) +  2*bn[k] * np.sin(-2 * n * pi * k  / numPoints)
 			res[n] = val
 		print("res = ")
 		print(res) 
@@ -115,6 +152,8 @@ def fourierFunFFT(t):
 
 #to use fun2:
 fun = fun2
+#to use fun3:
+#fun = fun3
 
 plt.plot(t, fun(t), "r")
 #plt.plot(t, fourierFunExpl(t), "b")
